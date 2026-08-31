@@ -32,7 +32,7 @@ void Game::Reset()
 	for (int i = 0; i < 5; ++i)
 	{
 		bricks.push_back(brick);
-		brick.x_position += 15;
+		brick.x_position += 16;
 	}
 }
 
@@ -82,6 +82,25 @@ void Game::Render() const
 		bricks[i].Draw();
 	}
 
+	int screenWidth = Console::WindowWidth();
+	int screenHeight = Console::WindowHeight();
+
+	int boxWidth = 25;
+
+	int x = (screenWidth - boxWidth) / 2;
+	int y = screenHeight / 2;
+
+	if (bricks.empty())
+	{
+		Console::WordWrap(x, y, boxWidth, "You win! Press 'R' to play again.");
+	}
+
+	if (ball.y_position > paddle.y_position)
+	{
+		Console::WordWrap(x, y, boxWidth, "You lose. Press 'R' to play again.");
+	}
+
+
 	Console::Lock(false);
 }
 
@@ -96,16 +115,28 @@ void Game::CheckCollision()
 			ball.y_velocity *= -1;
 
 			// TODO #5 - If the ball hits the same brick 3 times (color == black), remove it from the vector
-
+			if (bricks[i].color == ConsoleColor::Black)
+			{
+				bricks.erase(bricks.begin() + i);
+			}
 		}
 
 		// TODO #6 - If no bricks remain, pause ball and display (render) victory text with R to reset
+		if (bricks.empty())
+		{
+			ball.moving = false;
+		}
 	}
 
 	if (paddle.Contains(ball.x_position + ball.x_velocity, ball.y_velocity + ball.y_position))
 	{
 		ball.y_velocity *= -1;
+
 	}
 	// TODO #7 - If ball touches bottom of window, pause ball and display (render) defeat text with R to reset
+	if (ball.y_position > paddle.y_position)
+	{
+		ball.moving = false;
+	}
 }
 
