@@ -28,11 +28,21 @@ void Game::Reset()
 	brick.y_position = 5;
 	brick.doubleThick = true;
 	brick.color = ConsoleColor::DarkGreen;
+	bricks.push_back(brick);
 
-	for (int i = 0; i < 5; ++i)
+	int randomBrickNumber = (rand() % 10) + 5; //for more levels. Proof that YES, this can do more than 5!
+	//If you need a specific number just comment this out or hardcode it or something
+
+	for (int i = 0; i < randomBrickNumber; ++i)
 	{
+		brick.x_position += 13;
+		
+		if (i % 5 == 0 && i > 0)
+		{
+			brick.x_position = 0;
+			brick.y_position += 2;
+		}
 		bricks.push_back(brick);
-		brick.x_position += 16;
 	}
 }
 
